@@ -1,18 +1,10 @@
 let isLive = false;
 
-let api = '';
+
 $(function () {
   
 
-  if (window.location.href.indexOf("test") > -1) {
-
-    api = 'http://test-bolaswerte.bolaswerte.com/api/';
-  }
-  else {
-    api = 'http://bolaswerte.bolaswerte.com/api/';
-  }
-
-
+  
 $("#spinner").hide();
 var bgclass = "btn btn-app bg-success";
 var hideLive = $('#hideLive').val();
@@ -25,13 +17,239 @@ if(hideLive == 1){
 
 $("#div_loader").hide();
 $("#div_investor").hide();
+console.log("isLive: " + isLive);
 
+if(isLive){
+    $('#liveStatus').val('Online');
+    $("#source_link").attr("disabled", "disabled");
+    $("#livebtn").attr('class', 'btn btn-app bg-success');
+    $('#livebtn').html('<i class="fas fa-stop"></i> Stop');
+    $('#liveVid').show();
+    
+
+}
+else{
+    $('#liveStatus').val('Offline');
+    $("#source_link").removeAttr("disabled");
+    $("#livebtn").attr('class', 'btn btn-app');
+    $('#livebtn').html('<i class="fas fa-play"></i> Live');
+    $('#liveVid').hide();
+}
 
 
 
 })
 
 
+
+
+//   $("input[data-bootstrap-switch]").on('change.bootstrapSwitch', function(e) {
+//     console.log(e.target.checked);
+//     if(e.target.checked) {
+//         console.log("On");
+//         isLive = true;
+//         $("#livebtn").attr('class', 'btn btn-app bg-success');
+
+//     }
+//     else {
+//         console.log("Off");
+//         isLive = false;
+//         $("#livebtn").attr('class', 'btn btn-app');
+
+//     }
+// })
+
+
+$('#livebtn').on('click', function() {
+    console.log("naclick");
+    console.log(isLive);
+    if(!isLive){
+        
+        confirmLive(1);
+        // $("#livebtn").attr('class', 'btn btn-app bg-success');
+        // $('#livebtn').html('<i class="fas fa-stop"></i> Stop');
+    }
+    else{
+        
+        confirmLive(0);
+        // $("#livebtn").attr('class', 'btn btn-app ');
+        // $('#livebtn').html('<i class="fas fa-play"></i> Live');
+    }
+        
+});
+
+var confirmLive = async function(status) {
+    var source_link = $('#source_link').val();
+    let titletext = '';
+    let confirmText = '';
+    if(source_link == ''){
+        Swal.fire(
+            'Error!',
+            'Please provice Source Link',
+            'error'
+          )
+    }
+    else {
+        if(status == 0){
+            titletext = 'Do you want to stop live now?';
+            confirmText = 'Stop now';
+            source_link = '';
+        }
+        else {
+            titletext = 'Do you want to go live now?';
+            confirmText = 'Go Live!';
+        }
+
+        Swal.fire({
+            title: titletext,
+            showDenyButton: false,
+            showCancelButton: true,
+            confirmButtonText: confirmText,
+            denyButtonText: `Cancel`,
+          }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+               goLive(status,source_link);
+            } else if (result.isDenied) {
+              Swal.fire('Changes are not saved', '', 'info')
+            }
+          })
+    }
+   
+};
+
+
+var goLive = async function(status,source_link) {
+    $.ajax({
+        type:"post",
+        dataType: "json",
+        data:{
+            url_src: source_link,
+            live: status,
+        },
+        url:"http://bolaswerte.bolaswerte.com/api/goLive/",
+        success:function(res)
+        {
+            const textres = res;
+            console.log('res: ' + textres);
+            Swal.fire(
+                'Saved!',
+                '',
+                'success'
+              )
+              
+              
+              setTimeout(function(){ location.replace('live.php'); }, 3000);
+        },
+        error : function(result, statut, error){ // Handle errors
+            console.log('result: ' + result.responseText);
+            // let myJson = JSON.stringify(result);
+            // console.log('result: ' + myJson);
+          }
+
+    });
+
+};
+
+
+$('#reguserAdminbtn').on('click', function() {
+    var uname = $('#uname').val();
+    var apass = $('#apass').val();
+    var cpass = $('#cpass').val();
+    var fname = $('#fname').val();
+    var aemail = $('#aemail').val();
+    var phone_no = $('#phone_no').val();
+    var code = $('#code').val();
+    var gcash_no = $('#gcash_no').val();
+    var selectType = $('#selectType').val();
+    var seletProvince = $('#seletProvince').val();
+    var comm_perc = $('#comm_perc').val();
+    console.log("uname: " + uname);
+    console.log("apass: " + apass);
+
+    if(uname == '' || apass == '' || fname == '' || aemail == '' || phone_no == '' || selectType == '' ) {
+        Swal.fire(
+            'Some fields are empty!',
+            'Please complete all the information.',
+            'error'
+          )
+    }
+    else {
+
+        if(apass == cpass) {
+            Swal.fire({
+                title: 'Do you want to save user?',
+                showDenyButton: false,
+                showCancelButton: true,
+                confirmButtonText: 'Proceed',
+                denyButtonText: `Cancel`,
+              }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    registerAdmin(uname,apass,fname,aemail,phone_no,gcash_no,seletProvince,code,selectType,comm_perc);
+                } else if (result.isDenied) {
+                  Swal.fire('Changes are not saved', '', 'info')
+                }
+              })
+           
+        }
+        else {
+            Swal.fire(
+                'Password not match!',
+                'confirm you password',
+                'error'
+              )
+        }
+       
+    }
+    
+
+}); 
+
+
+var registerAdmin = async function(uname,apass,fname,aemail,phone_no,gcash_no,seletProvince,code,selectType,comm_perc){
+    console.log('pasok api');
+   
+      $.ajax({
+        type:"post",
+        dataType: "json",
+        data:{
+            username: uname,
+            password: apass,
+            email: aemail,
+            phone_no: phone_no,
+            code: code,
+            gcash_no: gcash_no,
+            full_name: fname,
+            assign_location: seletProvince,
+            type: selectType,
+            comm_perc: comm_perc
+        },
+        url:"http://bolaswerte.bolaswerte.com/api/registerAdmin/",
+        success:function(res)
+        {
+            const textres = res;
+            console.log('res: ' + textres);
+            Swal.fire(
+                'Saved!',
+                '',
+                'success'
+              )
+
+            //   setTimeout(function(){ location.replace('admin_users.php'); }, 3000);// 2seconds
+        },
+        error : function(result, statut, error){ // Handle errors
+            console.log('result: ' + result.responseText);
+            // let myJson = JSON.stringify(result);
+            // console.log('result: ' + myJson);
+          }
+     });
+  
+  
+  
+    
+   
+  };
   let prov = 0;
   let seq = 0;
 
@@ -43,7 +261,62 @@ $("#div_investor").hide();
   //  });
 
   
+$('#loadDate').on('click', function() {
+  // let drawId = $('#drawDate').val();
+  var dateId = $('#drawDate').val();
+console.log('change' + dateId);
+loadDatedDraws(dateId);
+});
 
+
+var loadDatedDraws = function (dateId) {
+
+  $.ajax({
+    type:"post",
+    dataType: "json",
+    data:{
+        draw_date: dateId
+        
+    },
+    url:"getSelDraw.php",
+    success:function(res)
+    {
+        const textres = res;
+        console.log('res: ' + textres.data);
+        
+        $('#drawData').html(textres.data);
+
+        //   setTimeout(function(){ location.replace('admin_users.php'); }, 3000);// 2seconds
+    },
+    error : function(result, statut, error){ // Handle errors
+        console.log('result: ' + result.responseText);
+        // let myJson = JSON.stringify(result);
+        // console.log('result: ' + myJson);
+      }
+ });
+
+};
+
+$('#selectType').change(function() {
+    var selectType = $('#selectType').val();
+    getProvince();
+    // getCode();
+    if(selectType == 3){
+        $("#div_loader").show();
+        $("#gcashLabel").show();
+        $("#gcash_no").show();
+    }
+    else if(selectType == 4){
+        $("#div_investor").show();
+        $("#gcashLabel").hide();
+        $("#gcash_no").hide();
+    }
+    else {
+        $("#div_loader").hide();
+        $("#div_investor").hide();
+    }
+    // do stuff here;
+  });
 
   var getProvince = function() {
     $('#bet_table').html('');
@@ -119,13 +392,39 @@ $('#btnSigninAdmin').on('click', function() {
               man_pass: man_pass
           },
           cache: false,
-          success: function(res){
-              console.log('dataResult: ' + res);
-                  if(res === 'success')
+          success: function(dataResult){
+              console.log('dataResult: ' + dataResult);
+                  if(dataResult > 0)
                   {
-                    weHaveSuccess = true;
-                    location.replace("./");
+                    console.log('pasok: ');
+                    let loc = parseInt(dataResult);
                     
+                      weHaveSuccess = true;
+
+                      switch(loc) {
+                        case 1:
+                            location.replace("./");
+                            break;
+                        case 2:
+                            location.replace("live.php");
+                            break;
+                        case 3:
+                            location.replace("cashin.php");
+                            break;
+                        case 4:
+                            location.replace("monitorprov.php");
+                            break;
+                        case 5:
+                            location.replace("banker.php");
+                            break;
+                        case 6:
+                            location.replace("applicants.php");
+                            break;
+                        case 7:
+                            location.replace("primary.php");
+                            break;
+                        }
+                      
                   }
                   else {
                       weHaveSuccess = false;
