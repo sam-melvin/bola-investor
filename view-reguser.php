@@ -7,8 +7,8 @@ use App\Models\UsersAccess;
 require 'bootstrap.php';
 checkSessionRedirect(SESSION_UID, PAGE_LOCATION_LOGIN);
 $loggedUser = User::find($_SESSION[SESSION_UID]);
-$page = 'cashin';
-$pagetype = 3;
+$page = 'index';
+$pagetype = 4;
 checkCurUserIsAllow($pagetype,$_SESSION[SESSION_TYPE]);
 
 $userAccess = UsersAccess::create([
@@ -27,7 +27,7 @@ $ids = $_SESSION[SESSION_UID];
 $lists = [];
 $now = new DateTime('now');
 
-$results = BolaUsers::where('loader_code', $loggedUser->code)
+$results = BolaUsers::where('province_id', $loggedUser->assign_location)
     // ->where($columnFilterName, $loggedUser->user_id_code)
     // ->where('date_submit', $now->format('m-d-Y'))
     // ->where('draw_number', WinningNumber::getNextDrawNumber())
@@ -136,7 +136,7 @@ $province = new Province();
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item">Assigned Users</li>
+              <li class="breadcrumb-item">Registered Users</li>
               <li class="breadcrumb-item active"></li>
             </ol>
           </div><!-- /.col -->
@@ -153,7 +153,7 @@ $province = new Province();
           <div class="col-12">
               <div class="card">
                     <div class="card-header">
-                      <h3 class="card-title">Assigned Users</h3>
+                      <h3 class="card-title">Registered Users</h3>
                      
                     </div>
                     <!-- /.card-header -->
@@ -287,7 +287,6 @@ $province = new Province();
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="dist/js/pages/dashboard.js"></script>
 <script src="dist/js/pages/templates.js"></script>
-<script src="dist/js/share.js"></script>
 <!-- DataTables  & Plugins -->
 <script src="plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
@@ -313,7 +312,7 @@ $province = new Province();
     
     
   });
-  Share.init()
+
   
 </script>
 </body>

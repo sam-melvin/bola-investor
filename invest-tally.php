@@ -1,19 +1,29 @@
 <?php
 use App\Models\User;
-use App\Models\Bets;
-use App\Models\BolaUsers;
+use App\Models\CashPool;
 use App\Models\Province;
+use App\Models\Transactions;
 use App\Models\Draws;
-use App\Models\Winners;
-use App\Models\UserEarnings;
 use App\Models\UsersAccess;
 
 require 'bootstrap.php';
+$drawId = $_GET['id'];
+$bettors = $_GET['bettors'];
+$winners = $_GET['winners'];
+$bets = $_GET['bets'];
+$payouts = $_GET['payouts'];
+$ddate = $_GET['ddate'];
+$dtime = $_GET['dtime'];
+$drawid = $_GET['drawid'];
+$digit = $_GET['digit'];
+$person = $_GET['person'];
+$residual = $_GET['residual'];
 
 checkSessionRedirect(SESSION_UID, PAGE_LOCATION_LOGIN);
 
 $loggedUser = User::find($_SESSION[SESSION_UID]);
-$page = 'index';
+$page = 'monitorprov';
+
 $pagetype = 4;
 checkCurUserIsAllow($pagetype,$_SESSION[SESSION_TYPE]);
 
@@ -31,57 +41,48 @@ $_SESSION['last_page'] = $_SERVER['SCRIPT_URI'];
 
 $ids = $_SESSION[SESSION_UID];
 
-$sampdate=date_create('2022-06-02');
-// $sampdate=date_format($sampdate,'Y-m-d');
-$results = Province::where('country_id', 174)
-    ->orderBy('province','ASC')
-    ->get();
+// $transactions = Transactions::where('id', $transId)
+//          ->orderByDesc('id')
+//          ->first();
 
-$bets = new Bets();
-$winners = new Winners();
+
+$drawData = Draws::where('id', $drawId)
+        ->orderByDesc('id')
+        ->first();
+
 $province = new Province();
-$userearnings = new UserEarnings();
-$userlocation = $loggedUser->assign_location;
-
-$userLists = BolaUsers::where('province_id', $loggedUser->assign_location)->get();
 
 
-if(isset($_POST['loadDatebtn'])) {
-  $dateTodayCreate = date_create($_POST['loadDate']);
-  $dateTodayFormat = date_format($dateTodayCreate,'m/d/Y');
-  $dateselected = date_format($dateTodayCreate,'Y-m-d'); 
-}
-else {
-  $dateselected = DATE_TODAY;
-  $dateTodayCreate = date_create($dateselected);
-  $dateTodayFormat = date_format($dateTodayCreate,'m/d/Y');
-}
+$getpercent = (float)$loggedUser->comm_perc / 100;
+$profit = (float)$bets - (float)$payouts;
+$totalearnings = $profit - (float)$person - (float)$residual;
+$commision = $profit * $getpercent;
+// $results = Province::where('country_id', 174)
+    
+//     ->orderBy('province','ASC')
+//     ->get();
+
+// $user = new User();
 
 
+// $cashpool = new CashPool();
+// $banker = [
+//     'currentBalance' => $cashpool->getCashPool()
+// ];
 
-$drawLists = Draws::where('draw_date', $dateselected)
-    ->orderBy('draw_date','ASC')
-    ->get();
-
-
-$commision = (float)$loggedUser->comm_perc / 100;
 /**
  * get user lists
  *
  * 1. used for the select drop down
  */
 // $userLists = User::where('assign_id', $loggedUser->user_id_code)->get();
-
-
-
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bola Manage | Banker</title>
+    <title>Bola Manage | Tally</title>
     <link rel="apple-touch-icon" sizes="57x57" href="/dist/img/favicon/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="/dist/img/favicon/apple-icon-60x60.png">
     <link rel="apple-touch-icon" sizes="72x72" href="/dist/img/favicon/apple-icon-72x72.png">
@@ -125,6 +126,7 @@ $commision = (float)$loggedUser->comm_perc / 100;
                 <li class="nav-item">
                     <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
                 </li>
+               
             </ul>
 
             <?php
@@ -141,11 +143,11 @@ $commision = (float)$loggedUser->comm_perc / 100;
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1 class="m-0"><?= $dateselected ?> Monitor <?= $province->getProvince($loggedUser->assign_location) ?></h1>
+                            <h1 class="m-0">Tally</h1>
                         </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
-                                <li class="breadcrumb-item">Monitor</li>
+                                <li class="breadcrumb-item">Tally</li>
                                 <li class="breadcrumb-item active"></li>
                             </ol>
                         </div>
@@ -168,135 +170,183 @@ $commision = (float)$loggedUser->comm_perc / 100;
             </div>
 
             <section class="content">
-                <div class="container-fluid">
+            <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <!-- <div class="callout callout-info">
+              <h5><i class="fas fa-info"></i> Note:</h5>
+              This page has been enhanced for printing. Click the print button at the bottom.
+            </div> -->
 
-                    <div class="row">
-                        <div class="col">
-                            <div class="small-box bg-warning">
-                                <div class="inner">
-                                <p>Registered Users in <strong><?= $province->getProvince($loggedUser->assign_location) ?></strong></p>
-                                    <h3><?= count($userLists) ?></h3>
-                                    
-                                </div>
-                                <div class="icon">
-                                    <i class="ion ion-person-add"></i>
-                                </div>
-                                <a href="view-reguser.php" class="small-box-footer">
-                                    View list <i class="fas fa-arrow-circle-right"></i>
-                                </a>
-                            </div>
-                        </div>
-                        
-                    </div>
 
-                    <div class="row">
-              
-              
-              <div class="col-md-6">
-                <!-- /.form-group -->
-                <form action="index.php" method="post">
-                <div class="form-group">
-                      <label>Draw Date:</label>
-                      <div class="input-group date" id="reservationdate" data-target-input="nearest">
-                            <input type="text" name="loadDate" id="drawDate" class="form-control datetimepicker-input" data-target="#reservationdate"/>
-                            <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
-                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                            </div>
-                        </div>
-                    </div>
-                
-              </div>
-              <!-- /.col -->
-              <div class="col-md-6">
-                <div class="form-group">
-                <label>&nbsp;</label>
-                <!-- <button type="button" class="btn btn-block btn-primary" id="loadDate">Load</button> -->
-                <button type="submit" class="btn btn-block btn-primary" name="loadDatebtn">Load</button>
+            <!-- Main content -->
+            <div class="invoice p-3 mb-3">
+              <!-- title row -->
+              <div class="row">
+                <div class="col-12">
+                  <h4>
+                    <i class="fas fa-globe"></i> BolaSwerte, Inc.
+                    <?php $datec = date_create($drawData->date_updated); ?>
+                    <small class="float-right">Date: <?= date_format($datec,'F j, Y') ?></small>
+                  </h4>
                 </div>
-              </form>
+                <!-- /.col -->
               </div>
-              <!-- /.col -->
-            </div>
-            <!-- /.row -->
-                    <div class="row">
+              <!-- info row -->
+              <div class="row invoice-info">
+                <div class="col-sm-4 invoice-col">
+                  From
+                  <address>
+                    <strong>BolaSwerte, Inc.</strong><br>
+                    Philippines<br>
+                    Email: admin@bolaswerte.com
+                  </address>
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-4 invoice-col">
+                  To
+                  <address>
+                    <strong><?= $loggedUser->full_name ?></strong><br>
                     
-
-                        <div class="col">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h3 class="card-title">Today's Draw</h3>
-                                </div>
-                                <div class="card-body table-responsive">
-                                    <table id="lists" class="table table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>Game #</th>
-                                                <th>Digits</th>
-                                                <th>Total Net</th>
-                                                <th>Earning Percentage</th>
-                                                <th>Total Earnings</th>
-                                                <th>Draw Date</th>
-                                                <th>Draw Time</th>
-                                                <th></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="drawData">
-                                            <?php
-                                                foreach ($drawLists as $the):
-                                                $datec=date_create($the['date_created']);
-                                                $drawDate=date_create($the['draw_date']);
-                                                $drawTime=date_create($the['draw_time']);
-                                                $total_bettors = $bets->getTotalBettors($the,$userlocation);
-                                                $total_winners = $winners->getTotalWinners($the['id'],$userlocation);
-                                                $total_bets = $bets->getTotalBets($the,$userlocation);
-                                                $total_payouts = $winners->getTotalPayout($the['id'],$userlocation);
-                                                $sendDate = date_format($drawDate,'F j, Y');
-                                                $sendTime = date_format($drawTime,'g:i a');
-                                                $personearn = $userearnings->getTotalPersonEarnings($the,$userlocation);
-                                                $residualearn = $userearnings->getTotalResidualEarnings($the,$userlocation);
-                                                $total_earnings = (float)$total_bets * (float)$commision;
-                                            ?>
-
-                                        <tr>
-                                        <td><?= $the['draw_number'] ?></td>
-                                            <td class='text-warning'><strong><?= $the['digits'] ?></strong></td>
-                                            
-                                            <td>&#8369; <?= number_format($total_bets,2) ?></td>
-                                            <td><?= $loggedUser->comm_perc ?> %</td>
-                                            <td>&#8369; <?= number_format($total_earnings,2) ?> </td>
-                                            <td><?= date_format($drawDate,'F j, Y') ?></td>
-                                            <td><?= date_format($drawTime,'g:i a') ?></td>
-                                            
-                                            <td><a href="invest-tally.php?id=<?= $the['id'] ?>&bettors=<?= $total_bettors ?>&winners=<?= $total_winners ?>&bets=<?= $total_bets ?>&payouts=<?= $total_payouts ?>&ddate=<?= $sendDate ?>&dtime=<?= $sendTime ?>&drawid=<?= $the['draw_number']?>&digit=<?= $the['digits']?>&person=<?= $personearn?>&residual=<?= $residualearn?>" class="btn btn-primary ledgerModalDlg" data-token="$token" data-transactionid="" target="_blank">
-                                                 View Details</a></td>
-                                        </tr>
-
-
-                                        <?php endforeach ?>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <?= $province->getProvince($loggedUser->assign_location) ?><br>
+                    Phone: <?= $loggedUser->phone_no ?><br>
+                    Email: <?= $loggedUser->email ?>
+                  </address>
                 </div>
-                <?php
+                <!-- /.col -->
+                <!-- <div class="col-sm-4 invoice-col">
+                  <b>Transaction #: </b>TRN-<?= $transactions->id ?><br>
+                  <br>
+                  <b>Order ID:</b> 4F3S8J<br>
+                  <b>Payment Due:</b> 2/22/2014<br>
+                  <b>Account:</b> 968-34567
+                </div> -->
+                <!-- /.col -->
+              </div>
+              <!-- /.row -->
+
+              <!-- Table row -->
+              <div class="row">
+                <div class="col-12 table-responsive">
+                  <table class="table table-striped">
+                    <thead>
+                    <tr>
+                    <th>Draw #</th>
+                    <th>Digits</th>
+                    <th>Total Bettors</th>
+                    <th>Total Winners</th>
+                    <th>Draw Date</th>
+                    <th>Draw Time</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                    <td><?= $drawid ?></td>
+                    <td><?= $digit ?></td>
+                      <td><?= $bettors ?></td>
+                      <td><?= $winners ?></td>
+                      <td><?= $ddate ?></td>
+                      <td><?= $dtime ?></td>
+                    </tr>
+                    
+                    </tbody>
+                  </table>
+                </div>
+                <!-- /.col -->
+              </div>
+              <!-- /.row -->
+
+              <div class="row">
+                <!-- accepted payments column -->
+                <!-- <div class="col-6">
+                  <p class="lead">Payment Methods:</p>
+                  <img src="../../dist/img/credit/visa.png" alt="Visa">
+                  <img src="../../dist/img/credit/mastercard.png" alt="Mastercard">
+                  <img src="../../dist/img/credit/american-express.png" alt="American Express">
+                  <img src="../../dist/img/credit/paypal2.png" alt="Paypal">
+
+                  <p class="text-muted well well-sm shadow-none" style="margin-top: 10px;">
+                    Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles, weebly ning heekya handango imeem
+                    plugg
+                    dopplr jibjab, movity jajah plickers sifteo edmodo ifttt zimbra.
+                  </p>
+                </div> -->
+                <!-- /.col -->
+                <div class="col-12">
+                  <p class="lead">Computations </p>
+
+                  <div class="table-responsive">
+                    <table class="table">
+                      <tr>
+                        <th style="width:50%">Total Bets:</th>
+                        <td>&#8369; <?= number_format($bets,2) ?></td>
+                      </tr>
+                      <tr>
+                        <th style="width:50%">Total Win:</th>
+                        <td>&#8369; <?= number_format($payouts,2) ?></td>
+                      </tr>
+                      
+                      <tr>
+                        <th> Earnings </th>
+                        <td>&#8369; <?= number_format($profit,2) ?></td>
+                      </tr>
+                      <tr>
+                        <th style="width:50%">Personal Earnings:</th>
+                        <td>- &#8369; <?= number_format($person,2) ?></td>
+                      </tr>
+                      <tr>
+                        <th style="width:50%">Residual Earnings:</th>
+                        <td>- &#8369; <?= number_format($residual,2) ?></td>
+                      </tr>
+
+                      <tr>
+                        <th>Commision (<?= $loggedUser->comm_perc ?>%) </th>
+                        <td>- &#8369; <?= number_format($commision,2) ?></td>
+                      </tr>
+                      <tr>
+                        <th>Total Earnings:</th>
+                        <td>&#8369; <?= number_format($totalearnings,2) ?></td>
+                      </tr>
+                      <tr>
+                        <th>Remarks:</th>
+                        <td> <?= ($profit < 0) ? 'Loss' : 'Gain' ?></td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+                <!-- /.col -->
+              </div>
+              <!-- /.row -->
+
+              <!-- this row will not appear when printing -->
+              <!-- <div class="row no-print">
+                <div class="col-12">
+                  <a href="invoice-print.html" rel="noopener" target="_blank" class="btn btn-default"><i class="fas fa-print"></i> Print</a>
+                  <button type="button" class="btn btn-success float-right"><i class="far fa-credit-card"></i> Submit
+                    Payment
+                  </button>
+                  <button type="button" class="btn btn-primary float-right" style="margin-right: 5px;">
+                    <i class="fas fa-download"></i> Generate PDF
+                  </button>
+                </div>
+              </div> -->
+            </div>
+            <!-- /.invoice -->
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+                
+</section>
+
+            <?php
           include APP . DS . 'templates/elements/updatepass.php';
             ?>
-            </section>
 
-            
-           
 
         </div>
         <?php
                      include APP . DS . 'templates/elements/footer.php';
                 ?>
-      <!-- Control Sidebar -->
-  <aside class="control-sidebar control-sidebar-dark">
-    <!-- Control sidebar content goes here -->
-  </aside>
-  <!-- /.control-sidebar -->
     </div>
 
     <!-- JS starts here -->
@@ -335,29 +385,17 @@ $commision = (float)$loggedUser->comm_perc / 100;
     <script src="plugins/jquery-validation/jquery.validate.min.js"></script>
     <script src="https://kit.fontawesome.com/d6574d02b6.js" crossorigin="anonymous"></script>
     <script type="text/javascript">
-        
         $("#lists").DataTable({
-          responsive: true,
-          "searching": false,
-          "orderable": false,
-          "order": [[0, 'asc']],
+    responsive: false,
+    lengthChange: true,
+    autoWidth: true,
+    ordering: false
+}).buttons();
 
-      });
-      
-        $(".select2").select2({
-            theme: 'bootstrap4'
-        });
+$(".select2").select2({
+    theme: 'bootstrap4'
+});
 
-        $("#amount").inputmask({removeMaskOnSubmit: true});
-        
-//Date picker
-$('#reservationdate').datetimepicker({
-        format: 'L',
-    });
-
-
-   $('#drawDate').val('<?= $dateTodayFormat ?>');
-   
 
 
   $.validator.setDefaults({
@@ -368,7 +406,6 @@ $('#reservationdate').datetimepicker({
   
   }
   });
-
   $('#frmSendLoad').validate({
     rules: {
     amount: {

@@ -25,7 +25,7 @@ checkIfUserLoggedIn();
 <body class="hold-transition login-page">
     <div class="login-box">
         <div class="login-logo">
-        <b>Bola</b>Swerte Loader</a>
+        <b>Bola</b>Swerte Investor</a>
         </div>
         <!-- /.login-logo -->
         <div class="card">

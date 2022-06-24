@@ -17,25 +17,6 @@ if(hideLive == 1){
 
 $("#div_loader").hide();
 $("#div_investor").hide();
-console.log("isLive: " + isLive);
-
-if(isLive){
-    $('#liveStatus').val('Online');
-    $("#source_link").attr("disabled", "disabled");
-    $("#livebtn").attr('class', 'btn btn-app bg-success');
-    $('#livebtn').html('<i class="fas fa-stop"></i> Stop');
-    $('#liveVid').show();
-    
-
-}
-else{
-    $('#liveStatus').val('Offline');
-    $("#source_link").removeAttr("disabled");
-    $("#livebtn").attr('class', 'btn btn-app');
-    $('#livebtn').html('<i class="fas fa-play"></i> Live');
-    $('#liveVid').hide();
-}
-
 
 
 })
@@ -264,7 +245,8 @@ var registerAdmin = async function(uname,apass,fname,aemail,phone_no,gcash_no,se
 $('#loadDate').on('click', function() {
   // let drawId = $('#drawDate').val();
   var dateId = $('#drawDate').val();
-console.log('change' + dateId);
+console.log('change: ' + dateId);
+
 loadDatedDraws(dateId);
 });
 
@@ -282,10 +264,11 @@ var loadDatedDraws = function (dateId) {
     success:function(res)
     {
         const textres = res;
-        console.log('res: ' + textres.data);
+        // console.log('res: ' + textres.data);
         
         $('#drawData').html(textres.data);
 
+       
         //   setTimeout(function(){ location.replace('admin_users.php'); }, 3000);// 2seconds
     },
     error : function(result, statut, error){ // Handle errors
@@ -293,6 +276,7 @@ var loadDatedDraws = function (dateId) {
         // let myJson = JSON.stringify(result);
         // console.log('result: ' + myJson);
       }
+      
  });
 
 };
@@ -394,36 +378,14 @@ $('#btnSigninAdmin').on('click', function() {
           cache: false,
           success: function(dataResult){
               console.log('dataResult: ' + dataResult);
-                  if(dataResult > 0)
+                  if(dataResult === 'success')
                   {
                     console.log('pasok: ');
                     let loc = parseInt(dataResult);
                     
                       weHaveSuccess = true;
-
-                      switch(loc) {
-                        case 1:
-                            location.replace("./");
-                            break;
-                        case 2:
-                            location.replace("live.php");
-                            break;
-                        case 3:
-                            location.replace("cashin.php");
-                            break;
-                        case 4:
-                            location.replace("monitorprov.php");
-                            break;
-                        case 5:
-                            location.replace("banker.php");
-                            break;
-                        case 6:
-                            location.replace("applicants.php");
-                            break;
-                        case 7:
-                            location.replace("primary.php");
-                            break;
-                        }
+                      location.replace("./");
+                      
                       
                   }
                   else {
