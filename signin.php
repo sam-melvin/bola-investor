@@ -25,7 +25,7 @@ $requestData = [
 $user = User::where('username', $requestData['code'])
     // ->where('password', $requestData['passwd'])
     ->where(function ($query) {
-        $query->where('type', USER_LOADER);
+        $query->where('type', USER_INVESTOR);
     })
     ->first();
 /**
