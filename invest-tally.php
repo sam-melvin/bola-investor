@@ -56,7 +56,8 @@ $province = new Province();
 $getpercent = (float)$loggedUser->comm_perc / 100;
 $profit = (float)$bets - (float)$payouts;
 $operexpense = (float)$bets * 0.02;
-$deduction = (float)$payouts + (float)$person + (float)$residual + $operexpense;
+$loadercomm = (float)$bets * 0.1;
+$deduction = (float)$payouts + (float)$person + (float)$residual + $operexpense + $loadercomm;
 $total_net = (float)$bets - $deduction;
 $totalearnings = (float)$total_net * (float)$getpercent;
 $commision = $profit * $getpercent;
@@ -288,7 +289,10 @@ $commision = $profit * $getpercent;
                         <th style="width:50%">Total Win:</th>
                         <td>- &#8369; <?= number_format($payouts,2) ?></td>
                       </tr>
-                      
+                      <tr>
+                        <th style="width:50%">Loader (10%):</th>
+                        <td>- &#8369; <?= number_format($loadercomm,2) ?></td>
+                      </tr>
                       <tr>
                         <th style="width:50%">Personal Earnings:</th>
                         <td>- &#8369; <?= number_format($person,2) ?></td>
