@@ -21,8 +21,18 @@ checkIfUserLoggedIn();
     <link rel="stylesheet" href="plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
     <!-- Toastr -->
     <link rel="stylesheet" href="plugins/toastr/toastr.min.css">
+<style>
+body{
+    background-image: url('dist/img/gifintro.gif');
+    background-size: cover;
+    
+   
+    padding:0;
+    margin:0;
+}
+</style>
 </head>
-<body class="hold-transition login-page">
+<body class="hold-transition dark-mode login-page">
     <div class="login-box">
         <div class="login-logo">
         <b>Bola</b>Swerte Investor</a>

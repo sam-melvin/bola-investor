@@ -22,7 +22,7 @@ $residual = $_GET['residual'];
 checkSessionRedirect(SESSION_UID, PAGE_LOCATION_LOGIN);
 
 $loggedUser = User::find($_SESSION[SESSION_UID]);
-$page = 'monitorprov';
+$page = 'index';
 
 $pagetype = 4;
 checkCurUserIsAllow($pagetype,$_SESSION[SESSION_TYPE]);
@@ -55,7 +55,10 @@ $province = new Province();
 
 $getpercent = (float)$loggedUser->comm_perc / 100;
 $profit = (float)$bets - (float)$payouts;
-$totalearnings = $profit - (float)$person - (float)$residual;
+$operexpense = (float)$bets * 0.02;
+$deduction = (float)$payouts + (float)$person + (float)$residual + $operexpense;
+$total_net = (float)$bets - $deduction;
+$totalearnings = (float)$total_net * (float)$getpercent;
 $commision = $profit * $getpercent;
 // $results = Province::where('country_id', 174)
     
@@ -115,7 +118,7 @@ $commision = $profit * $getpercent;
     <link rel="stylesheet" href="plugins/select2/css/select2.min.css">
     <link rel="stylesheet" href="plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
 </head>
-<body class="hold-transition sidebar-mini layout-fixed">
+<body class="hold-transition sidebar-mini sidebar-collapse">
     <div class="wrapper">
         <div class="preloader flex-column justify-content-center align-items-center">
             <img class="animation__shake" src="dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60">
@@ -283,13 +286,9 @@ $commision = $profit * $getpercent;
                       </tr>
                       <tr>
                         <th style="width:50%">Total Win:</th>
-                        <td>&#8369; <?= number_format($payouts,2) ?></td>
+                        <td>- &#8369; <?= number_format($payouts,2) ?></td>
                       </tr>
                       
-                      <tr>
-                        <th> Earnings </th>
-                        <td>&#8369; <?= number_format($profit,2) ?></td>
-                      </tr>
                       <tr>
                         <th style="width:50%">Personal Earnings:</th>
                         <td>- &#8369; <?= number_format($person,2) ?></td>
@@ -298,18 +297,31 @@ $commision = $profit * $getpercent;
                         <th style="width:50%">Residual Earnings:</th>
                         <td>- &#8369; <?= number_format($residual,2) ?></td>
                       </tr>
+                      <tr>
+                        <th style="width:50%">Operation Expense (2%):</th>
+                        <td>- &#8369; <?= number_format($operexpense,2) ?></td>
+                      </tr>
+                      <tr>
+                        <th style="width:50%"></th>
+                        <td>&nbsp;</td>
+                      </tr>
 
                       <tr>
-                        <th>Commision (<?= $loggedUser->comm_perc ?>%) </th>
-                        <td>- &#8369; <?= number_format($commision,2) ?></td>
+                        <th style="width:50%">Total Net</th>
+                        <td><strong> &#8369; <?= number_format($total_net,2) ?></strong></td>
+                      </tr>
+
+                      <tr>
+                        <th>Commision Percentage </th>
+                        <td><strong> <?= $loggedUser->comm_perc ?> % </strong></td>
                       </tr>
                       <tr>
                         <th>Total Earnings:</th>
-                        <td>&#8369; <?= number_format($totalearnings,2) ?></td>
+                        <td><strong>&#8369; <?= number_format($totalearnings,2) ?></strong></td>
                       </tr>
                       <tr>
                         <th>Remarks:</th>
-                        <td> <?= ($profit < 0) ? 'Loss' : 'Gain' ?></td>
+                        <td><strong> <?= ($totalearnings < 0) ? 'Loss' : 'Gain' ?></strong></td>
                       </tr>
                     </table>
                   </div>

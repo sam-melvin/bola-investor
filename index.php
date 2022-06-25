@@ -81,7 +81,7 @@ $commision = (float)$loggedUser->comm_perc / 100;
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bola Manage | Banker</title>
+    <title>Bola Manage | Finance</title>
     <link rel="apple-touch-icon" sizes="57x57" href="/dist/img/favicon/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="/dist/img/favicon/apple-icon-60x60.png">
     <link rel="apple-touch-icon" sizes="72x72" href="/dist/img/favicon/apple-icon-72x72.png">
@@ -114,7 +114,7 @@ $commision = (float)$loggedUser->comm_perc / 100;
     <link rel="stylesheet" href="plugins/select2/css/select2.min.css">
     <link rel="stylesheet" href="plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
 </head>
-<body class="hold-transition sidebar-mini layout-fixed">
+<body class="hold-transition sidebar-mini sidebar-collapse">
     <div class="wrapper">
         <div class="preloader flex-column justify-content-center align-items-center">
             <img class="animation__shake" src="dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60">
@@ -141,7 +141,7 @@ $commision = (float)$loggedUser->comm_perc / 100;
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1 class="m-0"><?= $dateselected ?> Monitor <?= $province->getProvince($loggedUser->assign_location) ?></h1>
+                            <h1 class="m-0">Monitor <?= $province->getProvince($loggedUser->assign_location) ?></h1>
                         </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
@@ -254,20 +254,25 @@ $commision = (float)$loggedUser->comm_perc / 100;
                                                 $sendTime = date_format($drawTime,'g:i a');
                                                 $personearn = $userearnings->getTotalPersonEarnings($the,$userlocation);
                                                 $residualearn = $userearnings->getTotalResidualEarnings($the,$userlocation);
-                                                $total_earnings = (float)$total_bets * (float)$commision;
+                                                
+                                                $operexpense = (float)$total_bets * 0.02;
+                                                $loadercomm = (float)$total_bets * 0.1;
+                                                $deduction = $total_payouts + $loadercomm + (float)$personearn + (float)$residualearn + $operexpense;
+                                                $total_net = (float)$total_bets - $deduction;
+                                                $total_earnings = (float)$total_net * (float)$commision;
                                             ?>
 
                                         <tr>
                                         <td><?= $the['draw_number'] ?></td>
                                             <td class='text-warning'><strong><?= $the['digits'] ?></strong></td>
                                             
-                                            <td>&#8369; <?= number_format($total_bets,2) ?></td>
+                                            <td>&#8369; <?= number_format($total_net,2) ?></td>
                                             <td><?= $loggedUser->comm_perc ?> %</td>
                                             <td>&#8369; <?= number_format($total_earnings,2) ?> </td>
                                             <td><?= date_format($drawDate,'F j, Y') ?></td>
                                             <td><?= date_format($drawTime,'g:i a') ?></td>
                                             
-                                            <td><a href="invest-tally.php?id=<?= $the['id'] ?>&bettors=<?= $total_bettors ?>&winners=<?= $total_winners ?>&bets=<?= $total_bets ?>&payouts=<?= $total_payouts ?>&ddate=<?= $sendDate ?>&dtime=<?= $sendTime ?>&drawid=<?= $the['draw_number']?>&digit=<?= $the['digits']?>&person=<?= $personearn?>&residual=<?= $residualearn?>" class="btn btn-primary ledgerModalDlg" data-token="$token" data-transactionid="" target="_blank">
+                                            <td><a href="invest-tally.php?id=<?= $the['id'] ?>&bettors=<?= $total_bettors ?>&winners=<?= $total_winners ?>&bets=<?= $total_bets ?>&payouts=<?= $total_payouts ?>&ddate=<?= $sendDate ?>&dtime=<?= $sendTime ?>&drawid=<?= $the['draw_number']?>&digit=<?= $the['digits']?>&person=<?= $personearn?>&residual=<?= $residualearn?>&commision=<?= $commision ?>" class="btn btn-primary ledgerModalDlg" data-token="$token" data-transactionid="" target="_blank">
                                                  View Details</a></td>
                                         </tr>
 
