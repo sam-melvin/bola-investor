@@ -49,7 +49,8 @@ $userLists = BolaUsers::where('province_id', $loggedUser->assign_location)->get(
 if(isset($_POST['loadDatebtn'])) {
   $dateTodayCreate = date_create($_POST['loadDate']);
   $dateTodayFormat = date_format($dateTodayCreate,'m/d/Y');
-  $dateselected = date_format($dateTodayCreate,'Y-m-d'); 
+  $dateselected = date_format($dateTodayCreate,'Y-m-d');
+  unset($_POST['loadDate']); 
 }
 else {
   $dateselected = DATE_TODAY;
@@ -340,7 +341,9 @@ $commision = (float)$loggedUser->comm_perc / 100;
     <script src="plugins/jquery-validation/jquery.validate.min.js"></script>
     <script src="https://kit.fontawesome.com/d6574d02b6.js" crossorigin="anonymous"></script>
     <script type="text/javascript">
-        
+        if ( window.history.replaceState ) {
+            window.history.replaceState( null, null, window.location.href );
+        }
         $("#lists").DataTable({
           responsive: true,
           "searching": false,
