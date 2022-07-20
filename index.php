@@ -3,7 +3,7 @@ use App\Models\User;
 use App\Models\Bets;
 use App\Models\BolaUsers;
 use App\Models\Province;
-use App\Models\Draws;
+use App\Models\SamInvestor;
 use App\Models\Winners;
 use App\Models\UserEarnings;
 use App\Models\UsersAccess;
@@ -60,7 +60,7 @@ else {
 
 
 
-$drawLists = Draws::where('draw_date', $dateselected)
+$drawLists = SamInvestor::where('draw_date', $dateselected)
     ->orderBy('draw_date','ASC')
     ->get();
 
@@ -247,29 +247,29 @@ $commision = (float)$loggedUser->comm_perc / 100;
                                                 $datec=date_create($the['date_created']);
                                                 $drawDate=date_create($the['draw_date']);
                                                 $drawTime=date_create($the['draw_time']);
-                                                $total_bettors = $bets->getTotalBettors($the,$userlocation);
-                                                $total_winners = $winners->getTotalWinners($the['id'],$userlocation);
-                                                $total_bets = $bets->getTotalBets($the,$userlocation);
-                                                $total_payouts = $winners->getTotalPayout($the['id'],$userlocation);
-                                                $sendDate = date_format($drawDate,'F j, Y');
-                                                $sendTime = date_format($drawTime,'g:i a');
-                                                $personearn = $userearnings->getTotalPersonEarnings($the,$userlocation);
-                                                $residualearn = $userearnings->getTotalResidualEarnings($the,$userlocation);
+                                                // $total_bettors = $bets->getTotalBettors($the,$userlocation);
+                                                // $total_winners = $winners->getTotalWinners($the['id'],$userlocation);
+                                                // $total_bets = $bets->getTotalBets($the,$userlocation);
+                                                // $total_payouts = $winners->getTotalPayout($the['id'],$userlocation);
+                                                // $sendDate = date_format($drawDate,'F j, Y');
+                                                // $sendTime = date_format($drawTime,'g:i a');
+                                                // $personearn = $userearnings->getTotalPersonEarnings($the,$userlocation);
+                                                // $residualearn = $userearnings->getTotalResidualEarnings($the,$userlocation);
                                                 
-                                                $operexpense = (float)$total_bets * 0.02;
-                                                $loadercomm = (float)$total_bets * 0.1;
-                                                $deduction = $total_payouts + $loadercomm + (float)$personearn + (float)$residualearn + $operexpense;
-                                                $total_net = (float)$total_bets - $deduction;
-                                                $total_earnings = (float)$total_net * (float)$commision;
+                                                // $operexpense = (float)$total_bets * 0.02;
+                                                // $loadercomm = (float)$total_bets * 0.1;
+                                                // $deduction = $total_payouts + $loadercomm + (float)$personearn + (float)$residualearn + $operexpense;
+                                                // $total_net = (float)$total_bets - $deduction;
+                                                // $total_earnings = (float)$total_net * (float)$commision;
                                             ?>
 
                                         <tr>
-                                        <td><?= $the['draw_number'] ?></td>
+                                        <td><?= $the['game_no'] ?></td>
                                             <td class='text-warning'><strong><?= $the['digits'] ?></strong></td>
                                             
-                                            <td>&#8369; <?= number_format($total_net,2) ?></td>
-                                            <td><?= $loggedUser->comm_perc ?> %</td>
-                                            <td>&#8369; <?= number_format($total_earnings,2) ?> </td>
+                                            <td>&#8369; <?= number_format($the['total_net'],2) ?></td>
+                                            <td><?= $the['earn_percent'] ?> %</td>
+                                            <td>&#8369; <?= number_format($the['total_earn'],2) ?> </td>
                                             <td><?= date_format($drawDate,'F j, Y') ?></td>
                                             <td><?= date_format($drawTime,'g:i a') ?></td>
                                             
