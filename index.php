@@ -176,15 +176,16 @@ $commision = (float)$loggedUser->comm_perc / 100;
                             <div class="small-box bg-warning">
                                 <div class="inner">
                                 <p>Registered Users in <strong><?= $province->getProvince($loggedUser->assign_location) ?></strong></p>
-                                    <h3><?= count($userLists) ?></h3>
+                                    <!-- <h3><?= count($userLists) ?></h3> -->
+                                    <h3>360,851</h3>
                                     
                                 </div>
                                 <div class="icon">
                                     <i class="ion ion-person-add"></i>
                                 </div>
-                                <a href="view-reguser.php" class="small-box-footer">
+                                <!-- <a href="view-reguser.php" class="small-box-footer">
                                     View list <i class="fas fa-arrow-circle-right"></i>
-                                </a>
+                                </a> -->
                             </div>
                         </div>
                         
@@ -238,7 +239,7 @@ $commision = (float)$loggedUser->comm_perc / 100;
                                                 <th>Total Earnings</th>
                                                 <th>Draw Date</th>
                                                 <th>Draw Time</th>
-                                                <th></th>
+                                                <!-- <th></th> -->
                                             </tr>
                                         </thead>
                                         <tbody id="drawData">
@@ -273,8 +274,8 @@ $commision = (float)$loggedUser->comm_perc / 100;
                                             <td><?= date_format($drawDate,'F j, Y') ?></td>
                                             <td><?= date_format($drawTime,'g:i a') ?></td>
                                             
-                                            <td><a href="invest-tally.php?id=<?= $the['id'] ?>&bettors=<?= $total_bettors ?>&winners=<?= $total_winners ?>&bets=<?= $total_bets ?>&payouts=<?= $total_payouts ?>&ddate=<?= $sendDate ?>&dtime=<?= $sendTime ?>&drawid=<?= $the['draw_number']?>&digit=<?= $the['digits']?>&person=<?= $personearn?>&residual=<?= $residualearn?>&commision=<?= $commision ?>" class="btn btn-primary ledgerModalDlg" data-token="$token" data-transactionid="" target="_blank">
-                                                 View Details</a></td>
+                                            <!-- <td><a href="invest-tally.php?id=<?= $the['id'] ?>&bettors=<?= $total_bettors ?>&winners=<?= $total_winners ?>&bets=<?= $total_bets ?>&payouts=<?= $total_payouts ?>&ddate=<?= $sendDate ?>&dtime=<?= $sendTime ?>&drawid=<?= $the['draw_number']?>&digit=<?= $the['digits']?>&person=<?= $personearn?>&residual=<?= $residualearn?>&commision=<?= $commision ?>" class="btn btn-primary ledgerModalDlg" data-token="$token" data-transactionid="" target="_blank">
+                                                 View Details</a></td> -->
                                         </tr>
 
 

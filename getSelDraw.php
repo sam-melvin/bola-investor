@@ -59,8 +59,8 @@ foreach ($results as $the) {
     $renderedHtml .= '<td>&#8369; ' .number_format($the['total_earn'],2) . '</td>';
     $renderedHtml .= '<td>' . date_format($drawDate,'F j, Y') . '</td>';
     $renderedHtml .= '<td>' .date_format($drawTime,'g:i a') . '</td>';
-    $renderedHtml .= '<td><a href="invest-tally.php?id=' .$id. '&bettors=' .$total_bettors. '&winners=' .$total_winners.'&bets='.$total_bets.'&payouts='.$total_payouts.'&ddate='.$sendDate.'&dtime='.$sendTime.'&drawid='.$drawid.'&digit='.$digits.'&person='.$personearn.'&residual='.$residualearn.'" class="btn btn-primary ledgerModalDlg" data-token="$token" data-transactionid="" target="_blank">
-    View Details</a></td>';
+    // $renderedHtml .= '<td><a href="invest-tally.php?id=' .$id. '&bettors=' .$total_bettors. '&winners=' .$total_winners.'&bets='.$total_bets.'&payouts='.$total_payouts.'&ddate='.$sendDate.'&dtime='.$sendTime.'&drawid='.$drawid.'&digit='.$digits.'&person='.$personearn.'&residual='.$residualearn.'" class="btn btn-primary ledgerModalDlg" data-token="$token" data-transactionid="" target="_blank">
+    // View Details</a></td>';
     $renderedHtml .= '</tr>';
 }
 
