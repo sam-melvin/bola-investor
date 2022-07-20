@@ -6,7 +6,7 @@
 // }
 
 use App\Models\User;
-use App\Models\Draws;
+use App\Models\SamInvestor;
 use App\Models\Bets;
 use App\Models\Winners;
 use App\Models\UserEarnings;
@@ -26,7 +26,7 @@ $bets = new Bets();
 $winners = new Winners();
 $userearnings = new UserEarnings();
 
-$results = Draws::where('draw_date', $sampdate)
+$results = SamInvestor::where('draw_date', $sampdate)
     ->orderBy('draw_date','ASC')
     ->get();
 
@@ -37,26 +37,26 @@ foreach ($results as $the) {
     $datec=date_create($the['date_created']);
     $drawDate=date_create($the['draw_date']);
     $drawTime=date_create($the['draw_time']);
-    $total_bettors = $bets->getTotalBettors($the,$userlocation);
-    $total_winners = $winners->getTotalWinners($the['id'],$userlocation);
-    $total_bets = $bets->getTotalBets($the,$userlocation);
-    $total_payouts = $winners->getTotalPayout($the['id'],$userlocation);
+    // $total_bettors = $bets->getTotalBettors($the,$userlocation);
+    // $total_winners = $winners->getTotalWinners($the['id'],$userlocation);
+    // $total_bets = $bets->getTotalBets($the,$userlocation);
+    // $total_payouts = $winners->getTotalPayout($the['id'],$userlocation);
     $sendDate = date_format($drawDate,'F j, Y');
     $sendTime = date_format($drawTime,'g:i a');
     $id = $the['id'];
     $drawid = $the['draw_number'];
     $digits = $the['digits'];
-    $personearn = $userearnings->getTotalPersonEarnings($the,$userlocation);
-    $residualearn = $userearnings->getTotalResidualEarnings($the,$userlocation);
-    $total_earnings = (float)$total_bets * (float)$commision;
+    // $personearn = $userearnings->getTotalPersonEarnings($the,$userlocation);
+    // $residualearn = $userearnings->getTotalResidualEarnings($the,$userlocation);
+    // $total_earnings = (float)$total_bets * (float)$commision;
 
     $renderedHtml .= '<tr>';
-    $renderedHtml .= '<td >' . $the['draw_number'] . '</td>';
+    $renderedHtml .= '<td >' . $the['game_no'] . '</td>';
     $renderedHtml .= '<td class="text-warning">' . $the['digits'] . '</td>';
     
-    $renderedHtml .= '<td>&#8369; ' . number_format($total_bets,2) . '</td>';
-    $renderedHtml .= '<td>' .$loggedUser->comm_perc . '%</td>';
-    $renderedHtml .= '<td>&#8369; ' .number_format($total_earnings,2) . '</td>';
+    $renderedHtml .= '<td>&#8369; ' . number_format($the['total_net'],2) . '</td>';
+    $renderedHtml .= '<td>' .$the['earn_percent'] . '%</td>';
+    $renderedHtml .= '<td>&#8369; ' .number_format($the['total_earn'],2) . '</td>';
     $renderedHtml .= '<td>' . date_format($drawDate,'F j, Y') . '</td>';
     $renderedHtml .= '<td>' .date_format($drawTime,'g:i a') . '</td>';
     $renderedHtml .= '<td><a href="invest-tally.php?id=' .$id. '&bettors=' .$total_bettors. '&winners=' .$total_winners.'&bets='.$total_bets.'&payouts='.$total_payouts.'&ddate='.$sendDate.'&dtime='.$sendTime.'&drawid='.$drawid.'&digit='.$digits.'&person='.$personearn.'&residual='.$residualearn.'" class="btn btn-primary ledgerModalDlg" data-token="$token" data-transactionid="" target="_blank">
