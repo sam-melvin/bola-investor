@@ -27,6 +27,7 @@ $winners = new Winners();
 $userearnings = new UserEarnings();
 
 $results = SamInvestor::where('draw_date', $sampdate)
+    ->where('location', $userlocation)
     ->orderBy('draw_date','ASC')
     ->get();
 
