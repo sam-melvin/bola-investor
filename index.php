@@ -61,6 +61,7 @@ else {
 
 
 $drawLists = SamInvestor::where('draw_date', $dateselected)
+    ->where('location', $loggedUser->location)
     ->orderBy('draw_date','ASC')
     ->get();
 
