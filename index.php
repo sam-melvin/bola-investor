@@ -178,7 +178,7 @@ $commision = (float)$loggedUser->comm_perc / 100;
                                 <div class="inner">
                                 <p>Registered Users in <strong><?= $province->getProvince($loggedUser->assign_location) ?></strong></p>
                                     <!-- <h3><?= count($userLists) ?></h3> -->
-                                    <h3>360,851</h3>
+                                    <h3>480,900</h3>
                                     
                                 </div>
                                 <div class="icon">
